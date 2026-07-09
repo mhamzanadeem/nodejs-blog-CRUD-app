@@ -1,6 +1,10 @@
 const JWT = require("jsonwebtoken");
 
-const secret = "$uperMan@123";
+const secret = process.env.JWT_SECRET;
+if (!secret) {
+  console.error("JWT_SECRET environment variable is required");
+  process.exit(1);
+}
 
 function createTokenForUser(user) {
   const payload = {
@@ -9,7 +13,7 @@ function createTokenForUser(user) {
     profileImageURL: user.profileImageURL,
     role: user.role,
   };
-  const token = JWT.sign(payload, secret);
+  const token = JWT.sign(payload, secret, { expiresIn: "7d" });
   return token;
 }
 

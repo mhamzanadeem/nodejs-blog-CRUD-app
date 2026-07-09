@@ -63,6 +63,9 @@
                   <span class="badge" style="background:var(--medium-light);color:var(--medium-gray);font-family:Arial,sans-serif;font-weight:400;font-size:0.8rem;">
                     <%= Math.ceil((blog.body || '').length / 1000) %> min read
                   </span>
+                  <div class="mt-2">
+                    <a href="/blog/<%= blog._id %>" class="btn btn-sm btn-medium-outline" style="font-size:0.8rem;">Read more <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                  </div>
                 </div>
               </div>
             </div>

@@ -36,6 +36,10 @@ const userSchema = new Schema(
 userSchema.pre("save", function (next) {
   const user = this;
 
+  if (user.isModified("email")) {
+    user.email = user.email.toLowerCase();
+  }
+
   if (!user.isModified("password")) return;
 
   const salt = randomBytes(16).toString();

@@ -2,36 +2,64 @@
 <html lang="en">
   <head>
     <%- include('./partials/head') %>
-    <title>Write a story - Medium</title>
+    <title><%= typeof blog !== 'undefined' && blog ? 'Edit story' : 'Write a story' %> - Medium</title>
   </head>
   <body>
     <%- include('./partials/nav') %>
 
     <div class="container py-5" style="max-width: 720px;">
       <div class="mb-4">
-        <h2 class="page-title">Create your story</h2>
-        <p style="color:var(--medium-gray);font-family:Arial,sans-serif;font-size:1rem;">Share your ideas with the world.</p>
+        <h2 class="page-title"><%= typeof blog !== 'undefined' && blog ? 'Edit your story' : 'Create your story' %></h2>
+        <p style="color:var(--medium-gray);font-family:Arial,sans-serif;font-size:1rem;">
+          <%= typeof blog !== 'undefined' && blog ? 'Update your story below.' : 'Share your ideas with the world.' %>
+        </p>
       </div>
-      <form action="/blog" method="POST" enctype="multipart/form-data">
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger py-2" style="font-family:Arial,sans-serif;font-size:0.9rem;border:none;background:#fff0f0;color:#d32f2f;" role="alert">
+          <i class="fa-solid fa-circle-exclamation me-1"></i><%= error %>
+        </div>
+      <% } %>
+
+      <form action="<%= typeof blog !== 'undefined' && blog ? '/blog/edit/' + blog._id : '/blog' %>" method="POST" enctype="multipart/form-data">
         <div class="mb-4">
-          <label for="coverImage" class="form-label">Cover Image</label>
-          <div class="border rounded-3 p-4 text-center" style="border: 2px dashed var(--medium-border) !important;cursor:pointer;" onclick="document.getElementById('coverImage').click()" id="uploadArea">
-            <i class="fa-regular fa-image" style="font-size:2rem;color:var(--medium-gray);"></i>
-            <p class="mt-2 mb-0" style="font-family:Arial,sans-serif;color:var(--medium-gray);font-size:0.9rem;" id="uploadText">Click to upload a cover image</p>
-            <input type="file" class="d-none" name="coverImage" id="coverImage" accept="image/*" onchange="document.getElementById('uploadText').textContent = this.files[0].name" />
-          </div>
+          <label class="form-label">Cover Image</label>
+          <label for="coverImage" class="border rounded-3 p-4 text-center d-block" style="border: 2px dashed var(--medium-border) !important;cursor:pointer;">
+            <img id="preview" style="display:<%= typeof blog !== 'undefined' && blog && blog.coverImageURL ? 'block' : 'none' %>;max-height:200px;width:100%;object-fit:cover;border-radius:4px;margin-bottom:8px;" src="<%= typeof blog !== 'undefined' && blog && blog.coverImageURL ? blog.coverImageURL : '' %>" />
+            <i class="fa-regular fa-image" style="font-size:2rem;color:var(--medium-gray);" id="uploadIcon"></i>
+            <p class="mt-2 mb-0" style="font-family:Arial,sans-serif;color:var(--medium-gray);font-size:0.9rem;" id="uploadText">
+              <%= typeof blog !== 'undefined' && blog && blog.coverImageURL ? 'Click to replace cover image' : 'Click to upload a cover image' %>
+            </p>
+            <input type="file" name="coverImage" id="coverImage" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" onchange="previewFile(this)" />
+          </label>
+          <script>
+            function previewFile(input) {
+              var text = document.getElementById('uploadText');
+              var icon = document.getElementById('uploadIcon');
+              var img = document.getElementById('preview');
+              if (input.files && input.files[0]) {
+                text.textContent = input.files[0].name;
+                icon.style.display = 'none';
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  img.src = e.target.result;
+                  img.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+              }
+            }
+          </script>
         </div>
         <div class="mb-4">
           <label for="title" class="form-label">Title</label>
-          <input type="text" class="form-control form-control-lg" id="title" name="title" placeholder="Enter your title..." required style="border:none;border-bottom:2px solid var(--medium-border);border-radius:0;padding-left:0;font-size:1.5rem;font-weight:700;" />
+          <input type="text" class="form-control form-control-lg" id="title" name="title" placeholder="Enter your title..." required style="border:none;border-bottom:2px solid var(--medium-border);border-radius:0;padding-left:0;font-size:1.5rem;font-weight:700;" value="<%= typeof blog !== 'undefined' && blog ? blog.title : '' %>" />
         </div>
         <div class="mb-4">
           <label for="body" class="form-label">Story</label>
-          <textarea class="form-control" id="body" name="body" rows="14" placeholder="Tell your story..." required style="border:1px solid var(--medium-border);border-radius:4px;font-size:1.1rem;line-height:1.8;padding:16px;"></textarea>
+          <textarea class="form-control" id="body" name="body" rows="14" placeholder="Tell your story..." required style="border:1px solid var(--medium-border);border-radius:4px;font-size:1.1rem;line-height:1.8;padding:16px;"><%= typeof blog !== 'undefined' && blog ? blog.body : '' %></textarea>
         </div>
         <div class="d-flex gap-3">
-          <button type="submit" class="btn btn-medium btn-lg px-5">Publish</button>
-          <a href="/" class="btn btn-medium-outline btn-lg px-4">Cancel</a>
+          <button type="submit" class="btn btn-medium btn-lg px-5"><%= typeof blog !== 'undefined' && blog ? 'Update' : 'Publish' %></button>
+          <a href="<%= typeof blog !== 'undefined' && blog ? '/blog/' + blog._id : '/' %>" class="btn btn-medium-outline btn-lg px-4">Cancel</a>
         </div>
       </form>
     </div>

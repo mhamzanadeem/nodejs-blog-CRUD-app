@@ -12,14 +12,20 @@
               <i class="fa-regular fa-pen-to-square me-1"></i>Write
             </a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" role="button" data-bs-toggle="dropdown">
-              <img src="<%= user.profileImageURL %>" alt="<%= user.fullName %>" class="avatar-sm" />
-              <span class="d-none d-lg-inline" style="font-family:Arial,sans-serif;font-size:0.9rem;"><%= user.fullName %></span>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/logout" style="font-family:Arial,sans-serif;color:var(--medium-gray);font-size:0.9rem;">
+              <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Sign Out
             </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="border-radius:8px;border:1px solid var(--medium-border);">
-              <li><a class="dropdown-item" href="/user/logout" style="font-family:Arial,sans-serif;font-size:0.9rem;"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Sign Out</a></li>
-            </ul>
+          </li>
+          <li class="nav-item">
+            <form action="/user/delete-account" method="POST" onsubmit="return confirm('Delete your account permanently? All your stories and comments will be removed.')" class="m-0 p-0">
+              <button type="submit" class="btn nav-link text-danger border-0 bg-transparent" style="font-family:Arial,sans-serif;font-size:0.9rem;">
+                <i class="fa-regular fa-trash-can me-1"></i>Delete Account
+              </button>
+            </form>
+          </li>
+          <li class="nav-item">
+            <img src="<%= user.profileImageURL %>" alt="<%= user.fullName %>" class="avatar-sm" />
           </li>
         <% } else { %>
           <li class="nav-item">
