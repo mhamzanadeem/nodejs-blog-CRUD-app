@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+    <title>Write a story - Medium</title>
+  </head>
+  <body>
+    <%- include('./partials/nav') %>
+
+    <div class="container py-5" style="max-width: 720px;">
+      <div class="mb-4">
+        <h2 class="page-title">Create your story</h2>
+        <p style="color:var(--medium-gray);font-family:Arial,sans-serif;font-size:1rem;">Share your ideas with the world.</p>
+      </div>
+      <form action="/blog" method="POST" enctype="multipart/form-data">
+        <div class="mb-4">
+          <label for="coverImage" class="form-label">Cover Image</label>
+          <div class="border rounded-3 p-4 text-center" style="border: 2px dashed var(--medium-border) !important;cursor:pointer;" onclick="document.getElementById('coverImage').click()" id="uploadArea">
+            <i class="fa-regular fa-image" style="font-size:2rem;color:var(--medium-gray);"></i>
+            <p class="mt-2 mb-0" style="font-family:Arial,sans-serif;color:var(--medium-gray);font-size:0.9rem;" id="uploadText">Click to upload a cover image</p>
+            <input type="file" class="d-none" name="coverImage" id="coverImage" accept="image/*" onchange="document.getElementById('uploadText').textContent = this.files[0].name" />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control form-control-lg" id="title" name="title" placeholder="Enter your title..." required style="border:none;border-bottom:2px solid var(--medium-border);border-radius:0;padding-left:0;font-size:1.5rem;font-weight:700;" />
+        </div>
+        <div class="mb-4">
+          <label for="body" class="form-label">Story</label>
+          <textarea class="form-control" id="body" name="body" rows="14" placeholder="Tell your story..." required style="border:1px solid var(--medium-border);border-radius:4px;font-size:1.1rem;line-height:1.8;padding:16px;"></textarea>
+        </div>
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-medium btn-lg px-5">Publish</button>
+          <a href="/" class="btn btn-medium-outline btn-lg px-4">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+    <%- include('./partials/script') %>
+  </body>
+</html>

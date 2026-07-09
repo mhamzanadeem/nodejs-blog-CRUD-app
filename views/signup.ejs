@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+    <title>Sign Up - Medium</title>
+  </head>
+  <body class="bg-light">
+    <%- include('./partials/nav') %>
+
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+      <div class="auth-card bg-white w-100">
+        <div class="text-center mb-4">
+          <i class="fa-regular fa-pen-to-square" style="font-size:2.5rem;color:var(--medium-green);"></i>
+          <h3 class="mt-2 fw-bold" style="font-family:Arial,sans-serif;">Join Medium</h3>
+          <p style="color:var(--medium-gray);font-family:Arial,sans-serif;font-size:0.9rem;">Create an account to start writing and reading.</p>
+        </div>
+
+        <form action="/user/signup" method="POST">
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" name="fullName" placeholder="John Doe" required />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+          <div class="mb-4">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required />
+          </div>
+          <button type="submit" class="btn btn-medium w-100 py-2 mb-3">Create Account</button>
+        </form>
+
+        <p class="text-center mb-0" style="font-family:Arial,sans-serif;font-size:0.9rem;color:var(--medium-gray);">
+          Already have an account? <a href="/user/signin" style="color:var(--medium-green);font-weight:600;">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+    <%- include('./partials/script') %>
+  </body>
+</html>
