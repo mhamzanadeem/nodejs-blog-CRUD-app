@@ -10,9 +10,14 @@ const router = Router();
 
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
+const UPLOAD_DIR = path.join(__dirname, "../../public/uploads/");
+if (!require("fs").existsSync(UPLOAD_DIR)) {
+  require("fs").mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve("./public/uploads/"));
+    cb(null, UPLOAD_DIR);
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -32,6 +37,18 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
+function handleUpload(req, res, next) {
+  upload.single("image")(req, res, (err) => {
+    if (err) {
+      const message = err.code === "LIMIT_FILE_SIZE"
+        ? "File too large (max 5MB)"
+        : err.message || "Upload failed";
+      return res.status(400).json({ message });
+    }
+    next();
+  });
+}
+
 function mapBlog(blog, commentCount = 0) {
   return {
     _id: blog._id,
@@ -48,7 +65,7 @@ function mapBlog(blog, commentCount = 0) {
       ? {
           _id: blog.createdBy._id || blog.createdBy,
           fullName: blog.createdBy.fullName || "Unknown",
-          avatar: blog.createdBy.profileImageURL || "/images/default.png",
+          avatar: blog.createdBy.profileImageURL || null,
           bio: blog.createdBy.bio || "",
         }
       : null,
@@ -195,7 +212,7 @@ router.delete("/:id", requireApiAuth, async (req, res) => {
   }
 });
 
-router.post("/:id/upload", requireApiAuth, upload.single("image"), async (req, res) => {
+router.post("/:id/upload", requireApiAuth, handleUpload, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
     const blog = await Blog.findById(req.params.id);

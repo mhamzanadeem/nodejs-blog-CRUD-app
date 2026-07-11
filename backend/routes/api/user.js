@@ -11,9 +11,14 @@ const router = Router();
 
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
+const UPLOAD_DIR = path.join(__dirname, "../../public/uploads/");
+if (!require("fs").existsSync(UPLOAD_DIR)) {
+  require("fs").mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.resolve("./public/uploads/"));
+    cb(null, UPLOAD_DIR);
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -33,6 +38,18 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
+function handleUpload(req, res, next) {
+  upload.single("avatar")(req, res, (err) => {
+    if (err) {
+      const message = err.code === "LIMIT_FILE_SIZE"
+        ? "File too large (max 5MB)"
+        : err.message || "Upload failed";
+      return res.status(400).json({ message });
+    }
+    next();
+  });
+}
+
 function mapUser(user) {
   return {
     _id: user._id,
@@ -45,7 +62,7 @@ function mapUser(user) {
   };
 }
 
-router.post("/signup", upload.single("avatar"), async (req, res) => {
+router.post("/signup", handleUpload, async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
 
@@ -148,7 +165,7 @@ router.put("/profile", requireApiAuth, async (req, res) => {
   }
 });
 
-router.post("/avatar", requireApiAuth, upload.single("avatar"), async (req, res) => {
+router.post("/avatar", requireApiAuth, handleUpload, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
     const user = await User.findByIdAndUpdate(
