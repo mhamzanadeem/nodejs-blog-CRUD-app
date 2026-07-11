@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const cors = require("cors");
 
 const apiUserRoute = require("./routes/api/user");
 const apiBlogRoute = require("./routes/api/blog");
@@ -18,6 +17,28 @@ const {
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+app.use(helmet());
+
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",")
+  : ["*"];
+
+const wildcardAll = allowedOrigins.includes("*");
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && (wildcardAll || allowedOrigins.includes(origin))) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  } else if (wildcardAll) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization,X-Requested-With");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 if (!process.env.MONGO_URL) {
   console.error("MONGO_URL environment variable is required");
@@ -46,23 +67,6 @@ process.on("SIGINT", async () => {
   await mongoose.connection.close();
   process.exit(0);
 });
-
-app.use(helmet());
-
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",")
-  : ["http://localhost:5173", "http://localhost:4173"];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
