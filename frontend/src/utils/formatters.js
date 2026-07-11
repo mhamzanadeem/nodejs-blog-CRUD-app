@@ -20,13 +20,18 @@ export const excerpt = (content = '', maxLen = 150) => {
   return text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
 };
 
-import { BACKEND_URL } from './constants';
+import { BACKEND_URL, DEFAULT_COVER_IMAGES } from './constants';
 
 export const imageUrl = (path) => {
   if (!path) return null;
   if (path.startsWith('http')) return path;
   if (path.startsWith('/uploads/') || path.startsWith('/images/')) return `${BACKEND_URL}${path}`;
   return path;
+};
+
+export const randomCoverImage = (seed) => {
+  const idx = seed ? seed.toString().split('').reduce((a, c) => a + c.charCodeAt(0), 0) % DEFAULT_COVER_IMAGES.length : Math.floor(Math.random() * DEFAULT_COVER_IMAGES.length);
+  return DEFAULT_COVER_IMAGES[idx];
 };
 
 export const avatarUrl = (name = 'U') => {

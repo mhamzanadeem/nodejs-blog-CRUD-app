@@ -6,8 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import Comment from '../common/Comment';
 import Loader from '../common/Loader';
 import Modal from '../common/Modal';
-import { formatDate, readTime, avatarUrl, imageUrl } from '../../utils/formatters';
-import { PLACEHOLDER_IMAGE } from '../../utils/constants';
+import { formatDate, readTime, avatarUrl, imageUrl, randomCoverImage } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 export default function BlogDetails() {
@@ -86,7 +85,7 @@ export default function BlogDetails() {
     <article className="max-w-[720px] mx-auto px-5 md:px-0 pb-24">
       {/* Hero image */}
       <div className="h-72 md:h-96 rounded-lg overflow-hidden mb-10 -mx-5 md:mx-0">
-        <img src={imageUrl(blog.coverImage) || PLACEHOLDER_IMAGE} alt={blog.title} className="w-full h-full object-cover" />
+        <img src={randomCoverImage(blog._id)} alt={blog.title} className="w-full h-full object-cover" />
       </div>
 
       {/* Meta */}

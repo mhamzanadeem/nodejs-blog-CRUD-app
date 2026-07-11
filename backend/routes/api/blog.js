@@ -1,53 +1,9 @@
 const { Router } = require("express");
-const multer = require("multer");
-const path = require("path");
-const crypto = require("crypto");
 const Blog = require("../../models/blog");
 const Comment = require("../../models/comment");
 const { requireApiAuth } = require("../../middlewares/requireApiAuth");
 
 const router = Router();
-
-const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-
-const UPLOAD_DIR = path.join(__dirname, "../../public/uploads/");
-if (!require("fs").existsSync(UPLOAD_DIR)) {
-  require("fs").mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, UPLOAD_DIR);
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const name = crypto.randomUUID() + ext;
-    cb(null, name);
-  },
-});
-
-const upload = multer({
-  storage,
-  fileFilter: function (req, file, cb) {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(new Error("Only image files (JPEG, PNG, GIF, WEBP) are allowed"));
-    }
-    cb(null, true);
-  },
-  limits: { fileSize: 5 * 1024 * 1024 },
-});
-
-function handleUpload(req, res, next) {
-  upload.single("image")(req, res, (err) => {
-    if (err) {
-      const message = err.code === "LIMIT_FILE_SIZE"
-        ? "File too large (max 5MB)"
-        : err.message || "Upload failed";
-      return res.status(400).json({ message });
-    }
-    next();
-  });
-}
 
 function mapBlog(blog, commentCount = 0) {
   return {
@@ -211,23 +167,6 @@ router.delete("/:id", requireApiAuth, async (req, res) => {
     return res.json({ message: "Blog deleted" });
   } catch (error) {
     return res.status(500).json({ message: "Failed to delete blog" });
-  }
-});
-
-router.post("/:id/upload", requireApiAuth, handleUpload, async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-    const blog = await Blog.findById(req.params.id);
-    if (!blog) return res.status(404).json({ message: "Blog not found" });
-    if (blog.createdBy.toString() !== req.user._id) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    blog.coverImageURL = `/uploads/${req.file.filename}`;
-    await blog.save();
-    return res.json({ blog: mapBlog(blog), message: "Cover image updated" });
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to upload image" });
   }
 });
 

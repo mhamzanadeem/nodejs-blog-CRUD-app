@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BlogCard, { SmallBlogCard } from '../common/BlogCard';
 import Loader from '../common/Loader';
 import { getBlogs } from '../../api/blogApi';
-import { CATEGORIES, PLACEHOLDER_IMAGE } from '../../utils/constants';
+import { CATEGORIES } from '../../utils/constants';
 import { excerpt, readTime } from '../../utils/formatters';
 
 const STATIC_TRENDING = [

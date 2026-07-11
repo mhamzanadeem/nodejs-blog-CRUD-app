@@ -1,11 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { formatDate, readTime, excerpt, avatarUrl, imageUrl } from '../../utils/formatters';
-import { PLACEHOLDER_IMAGE } from '../../utils/constants';
+import { formatDate, readTime, excerpt, avatarUrl, imageUrl, randomCoverImage } from '../../utils/formatters';
 
 export default function BlogCard({ blog, featured = false }) {
   const navigate = useNavigate();
   const rt = readTime(blog.content);
-  const img = imageUrl(blog.coverImage) || PLACEHOLDER_IMAGE;
+  const img = randomCoverImage(blog._id);
   const authorAvatar = imageUrl(blog.author?.avatar) || avatarUrl(blog.author?.fullName || 'U');
 
   if (featured) {
@@ -99,7 +98,7 @@ export default function BlogCard({ blog, featured = false }) {
 export function SmallBlogCard({ blog }) {
   const navigate = useNavigate();
   const rt = readTime(blog.content);
-  const img = imageUrl(blog.coverImage) || PLACEHOLDER_IMAGE;
+  const img = randomCoverImage(blog._id);
 
   return (
     <article
