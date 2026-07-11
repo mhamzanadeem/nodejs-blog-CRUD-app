@@ -100,8 +100,8 @@ dist/
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
-# public/
-
+public/
+/frontend/src/assets
 # vuepress build output
 .vuepress/dist/
 

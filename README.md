@@ -1,240 +1,187 @@
 # Medium Blog App
 
-A full-featured blog application where users can sign up, write stories, upload cover images, comment on posts, and manage their content.
+A full-stack blog application with a **React (Vite + Tailwind)** frontend and **Node.js/Express JSON API** backend. Users can sign up, write stories with a rich text editor, upload cover images, comment on posts, and manage their profile. Data is stored in **MongoDB Atlas**.
 
 ---
 
 ## Features
 
-- User authentication (sign up / sign in / sign out)
-- Create, edit, and delete blog posts
-- Upload cover images for stories
-- Comment on posts
-- Responsive design (works on desktop & mobile)
+- User authentication (sign up / sign in / sign out) with HTTP-only cookies
+- Create, edit, and delete blog posts with a rich text editor (Quill)
+- Upload cover images and avatar photos
+- Comment on posts with threaded replies
+- Responsive design with collapsible sidebar (desktop) and drawer navigation (mobile)
 - Account deletion with all associated data
+- Cloud database (MongoDB Atlas) — no local installation needed
+- Security headers, rate limiting, password hashing with SHA-256 + salt
+- Server status indicator with wake-up button (for Render/free-tier deployments)
 
 ---
 
 ## Prerequisites
 
-Before running this project, you need two things installed on your computer:
+**Node.js** (LTS) — download from https://nodejs.org
 
-### 1. Node.js (includes npm)
-
-Download and install from: https://nodejs.org (Download the **LTS** version)
-
-To verify it's installed, open your terminal (Command Prompt on Windows, Terminal on Mac/Linux) and run:
-
+Verify installation:
 ```bash
 node --version
 npm --version
 ```
 
-You should see version numbers like `v18.x.x` and `10.x.x`.
-
-### 2. MongoDB
-
-MongoDB is the database that stores all the data (users, blog posts, comments).
-
-#### Option A: Install MongoDB locally (recommended)
-
-**Windows:**
-1. Download from: https://www.mongodb.com/try/download/community
-2. Run the installer — accept all default settings
-3. After installation, MongoDB starts automatically as a Windows service
-
-**macOS:**
-```bash
-brew tap mongodb/brew
-brew install mongodb-community
-brew services start mongodb-community
-```
-
-**Ubuntu / Linux:**
-```bash
-# Import MongoDB GPG key
-curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
-
-# Add repository
-echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-
-# Install
-sudo apt update && sudo apt install -y mongodb-org
-
-# Start MongoDB
-sudo systemctl start mongod
-sudo systemctl enable mongod
-```
-
-To verify MongoDB is running, open a terminal and type:
-```bash
-mongosh
-```
-If you see a `test>` prompt, MongoDB is working. Type `exit` to leave.
-
-#### Option B: Use MongoDB Atlas (cloud, no installation)
-
-1. Go to: https://www.mongodb.com/atlas
-2. Click "Try Free" and create a free account
-3. Create a free cluster (it takes 1-2 minutes)
-4. Click "Connect" → "Drivers" → copy the connection string
-5. Replace the `MONGO_URL` in your `.env` file with this string (see step 4 in installation)
-
 ---
 
 ## Installation
 
-Follow these steps exactly in order:
-
-### Step 1: Download the project
-
-Open your terminal and navigate to where you want to store the project, then run:
+### Step 1: Clone the project
 
 ```bash
-git clone https://github.com/mhamzanadeem/nodejs-blog-CRUD-app.git
-cd nodejs-blog-CRUD-app
+git clone <repo-url>
+cd nodejs-crud-app
 ```
 
-### Step 2: Install dependencies
-
-Run this command in the project folder:
+### Step 2: Install backend dependencies
 
 ```bash
+cd backend
 npm install
 ```
 
-This will download all required packages. You'll see a progress bar and then a success message.
+### Step 3: Install frontend dependencies
 
-### Step 3: Configure environment variables
+```bash
+cd ../frontend
+npm install
+```
 
-The project uses a `.env` file to store configuration. An example file is already provided.
+### Step 4: Configure environment variables
 
-Open the `.env` file in any text editor (Notepad, VS Code, etc.) and verify the settings:
+The backend uses a `.env` file at the **project root**:
 
 ```
-MONGO_URL=mongodb://127.0.0.1:27017/medium-clone
-JWT_SECRET=medium-app-jwt-secret-change-in-production
-COOKIE_SECRET=medium-app-cookie-secret-change-in-production
+MONGO_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/medium-clone?retryWrites=true&w=majority
+JWT_SECRET=your-strong-random-secret-here
+COOKIE_SECRET=another-strong-random-secret
 PORT=8000
 NODE_ENV=development
 ```
 
-- **MONGO_URL**: This is where MongoDB is running. If you installed MongoDB locally, leave this as-is.
-- **JWT_SECRET**: A secret key used for user authentication. You can change it to any random string.
-- **COOKIE_SECRET**: Another secret for securing browser cookies. Change it to any random string.
-- **PORT**: The port number the app runs on. Default is `8000`.
-- **NODE_ENV**: Set to `development` for local use.
+The frontend uses `frontend/.env`:
 
-### Step 4: Run the app
+```
+VITE_API_URL=http://localhost:8000/api
+```
+
+For production, change `VITE_API_URL` to your Render/cloud backend URL.
+
+### Step 5: Run the backend
 
 ```bash
+cd backend
 npm start
 ```
 
-You should see:
-
+Expected output:
 ```
 Server Started at PORT:8000
 MongoDB Connected
 ```
 
-### Step 5: Open in browser
+### Step 6: Run the frontend
 
-Open your web browser and go to:
+In a separate terminal:
 
+```bash
+cd frontend
+npm run dev
 ```
-http://localhost:8000
-```
 
----
-
-## How to Use
-
-### Sign Up
-
-1. Click **"Get Started"** in the top-right corner
-2. Enter your full name, email, and password (at least 8 characters)
-3. Click **"Create Account"**
-4. You'll be redirected to sign in
-
-### Sign In
-
-1. Click **"Sign In"**
-2. Enter your email and password
-3. Click **"Sign In"**
-
-### Create a Story
-
-1. Click the **"Write"** button in the navbar
-2. (Optional) Upload a cover image by clicking the upload area
-3. Enter a title and your story content
-4. Click **"Publish"**
-
-### Read a Story
-
-Click on any blog card on the home page, or click the **"Read more →"** button.
-
-### Comment on a Story
-
-Scroll to the bottom of any story, type your comment, and click **"Submit"**.
-
-### Edit a Story
-
-1. Open your story
-2. Click the **"Edit story"** button
-3. Make your changes and click **"Update"**
-
-### Delete a Story
-
-1. Open your story
-2. Click the **"Delete story"** button
-3. Confirm the deletion
-
-### Sign Out
-
-Click **"Sign Out"** in the navbar.
-
-### Delete Your Account
-
-Click **"Delete Account"** in the navbar. This permanently removes your account, all your stories, and all your comments.
+Opens at `http://localhost:5173`.
 
 ---
 
 ## Project Structure
 
 ```
-medium-blog-app/
-├── app.js                  # Main application entry point
-├── package.json            # Dependencies and scripts
-├── .env                    # Environment variables (do not share)
-├── .env.example            # Example environment file
-├── middlewares/
-│   ├── authentication.js   # Cookie-based auth check
-│   └── requireAuth.js      # Route protection middleware
-├── models/
-│   ├── blog.js             # Blog post schema
-│   ├── comment.js          # Comment schema
-│   └── user.js             # User schema
-├── routes/
-│   ├── blog.js             # Blog routes (CRUD + comments)
-│   └── user.js             # Auth routes (sign in, sign up, delete)
-├── services/
-│   └── authentication.js   # JWT token creation & validation
-├── views/
-│   ├── addBlog.ejs         # Create/Edit blog form
-│   ├── blog.ejs            # Single blog post view
-│   ├── home.ejs            # Homepage with blog cards
-│   ├── signin.ejs          # Sign in page
-│   ├── signup.ejs          # Sign up page
-│   └── partials/
-│       ├── head.ejs        # HTML head with Bootstrap + custom CSS
-│       ├── nav.ejs         # Navigation bar
-│       └── script.ejs      # Bootstrap JS
-└── public/
-    ├── images/
-    │   └── default.png     # Default user avatar
-    └── uploads/            # Uploaded cover images
+nodejs-crud-app/
+├── backend/                        # Node.js + Express JSON API
+│   ├── app.js                      # Entry point
+│   ├── package.json
+│   ├── middlewares/
+│   │   ├── authentication.js       # Cookie-based JWT check
+│   │   └── requireApiAuth.js       # Auth guard for API routes
+│   ├── models/
+│   │   ├── blog.js                 # Blog schema
+│   │   ├── comment.js              # Comment schema (supports replies)
+│   │   └── user.js                 # User schema (password hashing)
+│   ├── routes/
+│   │   └── api/
+│   │       ├── user.js             # Auth, profile, avatar, password
+│   │       ├── blog.js             # Blog CRUD, list, search, upload
+│   │       └── comment.js          # Comments, replies, delete
+│   ├── services/
+│   │   └── authentication.js       # JWT create/validate
+│   └── public/
+│       ├── images/default.png      # Default avatar
+│       └── uploads/                # Uploaded images
+├── frontend/                       # React + Vite + Tailwind SPA
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── .env
+│   ├── package.json
+│   └── src/
+│       ├── main.jsx
+│       ├── App.jsx                 # Root layout, sidebar context
+│       ├── routes.jsx              # Lazy-loaded route definitions
+│       ├── api/                    # Axios API client
+│       │   ├── axiosConfig.js
+│       │   ├── authApi.js
+│       │   ├── blogApi.js
+│       │   └── commentApi.js
+│       ├── components/
+│       │   ├── auth/               # SignIn, SignUp
+│       │   ├── blogs/              # BlogList, BlogDetails, CreateBlog, EditBlog
+│       │   ├── common/             # Navbar, BlogCard, Comment, Footer, Modal, Loader, ServerStatus
+│       │   └── profile/            # Settings (profile, security, posts, danger zone)
+│       ├── context/                # AuthContext, BlogContext
+│       ├── hooks/                  # useAuth, useBlog, useToast
+│       ├── pages/                  # Page wrappers for each route
+│       ├── styles/
+│       │   └── globals.css         # Design tokens, fonts, Quill styles
+│       └── utils/
+│           ├── constants.js
+│           ├── formatters.js
+│           └── validators.js
+├── .env                            # Backend environment variables
+├── .env.example
+└── .gitignore
 ```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/health` | No | Server health check |
+| POST | `/api/users/signup` | No | Create account |
+| POST | `/api/users/signin` | No | Sign in |
+| POST | `/api/users/signout` | No | Sign out |
+| GET | `/api/users/profile` | Yes | Get profile |
+| PUT | `/api/users/profile` | Yes | Update profile |
+| POST | `/api/users/avatar` | Yes | Upload avatar |
+| PUT | `/api/users/password` | Yes | Change password |
+| DELETE | `/api/users/account` | Yes | Delete account |
+| GET | `/api/blogs` | No | List blogs (paginated, searchable) |
+| GET | `/api/blogs/mine` | Yes | Get user's blogs |
+| GET | `/api/blogs/:id` | No | Get single blog |
+| POST | `/api/blogs` | Yes | Create blog |
+| PUT | `/api/blogs/:id` | Yes | Update blog |
+| DELETE | `/api/blogs/:id` | Yes | Delete blog |
+| POST | `/api/blogs/:id/upload` | Yes | Upload cover image |
+| GET | `/api/blogs/:blogId/comments` | No | Get comments (with replies) |
+| POST | `/api/blogs/:blogId/comments` | Yes | Add comment |
+| POST | `/api/blogs/:blogId/comments/:commentId/reply` | Yes | Reply to comment |
+| DELETE | `/api/comments/:id` | Yes | Delete comment |
 
 ---
 
@@ -244,48 +191,42 @@ medium-blog-app/
 |---|---|
 | **Node.js** | JavaScript runtime |
 | **Express** | Web framework |
-| **MongoDB** | Database |
-| **Mongoose** | MongoDB ODM (data modeling) |
-| **EJS** | Template engine for views |
-| **Bootstrap 5** | CSS framework for responsive UI |
+| **MongoDB Atlas** | Cloud database |
+| **Mongoose** | MongoDB ODM |
+| **React 19** | Frontend UI library |
+| **Vite** | Frontend build tool |
+| **Tailwind CSS v4** | Utility CSS framework |
+| **React Quill** | Rich text editor |
+| **React Router v7** | Client-side routing |
+| **Axios** | HTTP client |
 | **JWT** | Authentication tokens |
 | **Multer** | File upload handling |
 | **Helmet** | Security headers |
-| **express-rate-limit** | Rate limiting on login |
+| **express-rate-limit** | Rate limiting |
 
 ---
 
-## Security Features
+## Security
 
-- Passwords are hashed with SHA-256 + salt
+- Passwords hashed with SHA-256 + salt
 - JWT tokens expire after 7 days
-- Cookies are HTTP-only and same-site restricted
-- Login attempts are rate-limited (10 per 15 minutes)
-- File uploads are restricted to image types only (JPEG, PNG, GIF, WebP)
-- Uploaded files are saved with random names to prevent guessing
-- Security headers set via Helmet
-- Input validation on all forms
-- Email addresses are stored in lowercase to prevent duplicates
-- `node_modules/` and `.env` are excluded from version control
+- HTTP-only, same-site cookies
+- Login rate-limited (10 per 15 minutes)
+- File uploads restricted to image types (JPEG, PNG, GIF, WebP, max 5MB)
+- Files saved with random UUID filenames
+- Helmet security headers
+- Email addresses stored in lowercase
+- `node_modules/` and `.env` excluded from version control
 
 ---
 
 ## Troubleshooting
 
-### "MongoDB Connected" does not appear
+### MongoDB connection fails
+Check `MONGO_URL` in `.env`. Whitelist all IPs (`0.0.0.0/0`) in MongoDB Atlas Network Access.
 
-Make sure MongoDB is running. On Ubuntu/Linux: `sudo systemctl start mongod`. On macOS: `brew services start mongodb-community`. On Windows, check Services (run `services.msc`) for MongoDB.
+### Port in use
+Change `PORT` in `.env` (e.g., `PORT=3001`).
 
-### "EADDRINUSE" error when starting
-
-Another program is using port 8000. Change the `PORT` in `.env` to another number (e.g., `PORT=3000`).
-
-### Uploaded images don't show
-
-Make sure the `public/uploads/` folder exists. If not, create it:
-```bash
-mkdir -p public/uploads
-```
-
----
-
+### Frontend can't reach backend
+Ensure backend is running. Check `VITE_API_URL` in `frontend/.env` matches your backend URL.
