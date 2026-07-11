@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { updateProfile, changePassword, deleteAccount, uploadAvatar } from '../../api/authApi';
 import { getUserBlogs, deleteBlog } from '../../api/blogApi';
-import { avatarUrl, formatDate } from '../../utils/formatters';
+import { avatarUrl, imageUrl, formatDate } from '../../utils/formatters';
 import Modal from '../common/Modal';
 import Loader from '../common/Loader';
 import toast from 'react-hot-toast';
@@ -127,7 +127,7 @@ export default function Settings() {
               <h2 className="text-lg font-bold mb-6" style={{ color: 'var(--color-primary)' }}>Profile Information</h2>
               <div className="flex items-center gap-6 mb-8">
                 <div className="relative">
-                  <img src={avatarPreview || avatarUrl(user?.fullName || 'U')} alt=""
+                  <img src={imageUrl(avatarPreview) || avatarUrl(user?.fullName || 'U')} alt=""
                     className="w-20 h-20 rounded-full object-cover"
                     style={{ border: '3px solid var(--color-secondary-container)' }} />
                   <button onClick={() => fileRef.current.click()}

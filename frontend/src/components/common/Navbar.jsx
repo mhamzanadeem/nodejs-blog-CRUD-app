@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useSidebar } from '../../App';
-import { avatarUrl } from '../../utils/formatters';
+import { avatarUrl, imageUrl } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 const navItems = [
@@ -135,7 +135,7 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg">
               <img
-                src={user.avatar || avatarUrl(user.fullName)}
+                src={imageUrl(user.avatar) || avatarUrl(user.fullName)}
                 alt={user.fullName}
                 className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                 style={{ border: '2px solid var(--color-secondary-container)' }}
@@ -182,7 +182,7 @@ export default function Navbar() {
         </div>
         {user && (
           <img
-            src={user.avatar || avatarUrl(user.fullName)}
+            src={imageUrl(user.avatar) || avatarUrl(user.fullName)}
             alt={user.fullName}
             className="w-8 h-8 rounded-full object-cover"
             onClick={() => navigate('/settings')}
@@ -237,7 +237,7 @@ export default function Navbar() {
             {user ? (
               <div className="pt-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                 <div className="flex items-center gap-3 px-3 mb-3">
-                  <img src={user.avatar || avatarUrl(user.fullName)} alt={user.fullName}
+                  <img src={imageUrl(user.avatar) || avatarUrl(user.fullName)} alt={user.fullName}
                     className="w-9 h-9 rounded-full object-cover"
                     style={{ border: '2px solid var(--color-secondary-container)' }} />
                   <div>

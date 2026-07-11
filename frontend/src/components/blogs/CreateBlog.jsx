@@ -5,6 +5,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { useDropzone } from 'react-dropzone';
 import { createBlog, uploadCoverImage } from '../../api/blogApi';
 import { CATEGORIES } from '../../utils/constants';
+import { imageUrl } from '../../utils/formatters';
 import toast from 'react-hot-toast';
 
 const QUILL_MODULES = {
@@ -142,7 +143,7 @@ export default function CreateBlog({ initialData = null, blogId = null }) {
 
       {preview ? (
         <div>
-          {coverPreview && <img src={coverPreview} alt="cover" className="w-full h-72 object-cover rounded-lg mb-8" />}
+          {coverPreview && <img src={imageUrl(coverPreview)} alt="cover" className="w-full h-72 object-cover rounded-lg mb-8" />}
           <h2 className="font-bold text-4xl mb-4 tracking-tight" style={{ color: 'var(--color-primary)', fontFamily: 'Inter' }}>{form.title}</h2>
           <div className="font-serif text-lg leading-[1.85]" style={{ color: 'var(--color-on-surface)' }}
             dangerouslySetInnerHTML={{ __html: form.content }} />
@@ -163,7 +164,7 @@ export default function CreateBlog({ initialData = null, blogId = null }) {
               <input {...getInputProps()} />
               {coverPreview ? (
                 <>
-                  <img src={coverPreview} alt="cover" className="w-full h-full object-cover" />
+                  <img src={imageUrl(coverPreview)} alt="cover" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
                     style={{ background: 'rgba(0,0,0,0.4)' }}>
                     <p className="text-white text-sm font-semibold">Change Image</p>

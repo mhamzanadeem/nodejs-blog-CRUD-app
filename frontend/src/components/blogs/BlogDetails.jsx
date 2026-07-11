@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import Comment from '../common/Comment';
 import Loader from '../common/Loader';
 import Modal from '../common/Modal';
-import { formatDate, readTime, avatarUrl } from '../../utils/formatters';
+import { formatDate, readTime, avatarUrl, imageUrl } from '../../utils/formatters';
 import { PLACEHOLDER_IMAGE } from '../../utils/constants';
 import toast from 'react-hot-toast';
 
@@ -86,7 +86,7 @@ export default function BlogDetails() {
     <article className="max-w-[720px] mx-auto px-5 md:px-0 pb-24">
       {/* Hero image */}
       <div className="h-72 md:h-96 rounded-lg overflow-hidden mb-10 -mx-5 md:mx-0">
-        <img src={blog.coverImage || PLACEHOLDER_IMAGE} alt={blog.title} className="w-full h-full object-cover" />
+        <img src={imageUrl(blog.coverImage) || PLACEHOLDER_IMAGE} alt={blog.title} className="w-full h-full object-cover" />
       </div>
 
       {/* Meta */}
@@ -110,7 +110,7 @@ export default function BlogDetails() {
       <div className="flex items-center justify-between mb-10 pb-8 border-b"
         style={{ borderColor: 'var(--color-surface-container-high)' }}>
         <div className="flex items-center gap-3">
-          <img src={blog.author?.avatar || avatarUrl(blog.author?.fullName || 'U')} alt={blog.author?.fullName}
+          <img src={imageUrl(blog.author?.avatar) || avatarUrl(blog.author?.fullName || 'U')} alt={blog.author?.fullName}
             className="w-12 h-12 rounded-full object-cover"
             style={{ border: '2px solid var(--color-secondary-container)' }} />
           <div>
@@ -156,7 +156,7 @@ export default function BlogDetails() {
       {blog.author?.bio && (
         <div className="p-8 rounded-lg mb-12" style={{ background: 'var(--color-surface-container-low)' }}>
           <div className="flex items-center gap-3 mb-4">
-            <img src={blog.author?.avatar || avatarUrl(blog.author?.fullName || 'U')} alt="" className="w-12 h-12 rounded-full object-cover" />
+            <img src={imageUrl(blog.author?.avatar) || avatarUrl(blog.author?.fullName || 'U')} alt="" className="w-12 h-12 rounded-full object-cover" />
             <div>
               <p className="text-sm font-semibold" style={{ color: 'var(--color-primary)' }}>{blog.author?.fullName}</p>
               <p className="text-xs" style={{ color: 'var(--color-outline)' }}>Author</p>
@@ -176,7 +176,7 @@ export default function BlogDetails() {
 
         {user ? (
           <form onSubmit={handleComment} className="flex gap-3 mb-10">
-            <img src={user.avatar || avatarUrl(user.fullName)} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+            <img src={imageUrl(user.avatar) || avatarUrl(user.fullName)} alt="" className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
             <div className="flex-1 flex gap-3">
               <input value={commentText} onChange={e => setCommentText(e.target.value)}
                 placeholder="Share your thoughts…"

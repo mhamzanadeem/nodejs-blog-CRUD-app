@@ -65,7 +65,9 @@ function mapBlog(blog, commentCount = 0) {
       ? {
           _id: blog.createdBy._id || blog.createdBy,
           fullName: blog.createdBy.fullName || "Unknown",
-          avatar: blog.createdBy.profileImageURL || null,
+          avatar: blog.createdBy.profileImageURL && blog.createdBy.profileImageURL !== "/images/default.png"
+            ? blog.createdBy.profileImageURL
+            : null,
           bio: blog.createdBy.bio || "",
         }
       : null,

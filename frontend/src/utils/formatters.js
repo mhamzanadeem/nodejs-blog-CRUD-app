@@ -20,6 +20,15 @@ export const excerpt = (content = '', maxLen = 150) => {
   return text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
 };
 
+import { BACKEND_URL } from './constants';
+
+export const imageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('/uploads/') || path.startsWith('/images/')) return `${BACKEND_URL}${path}`;
+  return path;
+};
+
 export const avatarUrl = (name = 'U') => {
   const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=001f3f&color=fed65b&bold=true&size=128`;

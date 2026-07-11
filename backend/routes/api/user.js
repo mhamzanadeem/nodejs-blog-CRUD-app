@@ -51,11 +51,14 @@ function handleUpload(req, res, next) {
 }
 
 function mapUser(user) {
+  const avatar = user.profileImageURL && user.profileImageURL !== "/images/default.png"
+    ? user.profileImageURL
+    : null;
   return {
     _id: user._id,
     fullName: user.fullName,
     email: user.email,
-    avatar: user.profileImageURL,
+    avatar,
     role: user.role,
     bio: user.bio || "",
     createdAt: user.createdAt,

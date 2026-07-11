@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatRelativeDate, avatarUrl } from '../../utils/formatters';
+import { formatRelativeDate, avatarUrl, imageUrl } from '../../utils/formatters';
 import { deleteComment, replyToComment } from '../../api/commentApi';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -38,7 +38,7 @@ export default function Comment({ comment, blogId, onDelete }) {
     }
   };
 
-  const avatar = comment.author?.avatar || avatarUrl(comment.author?.fullName || 'U');
+  const avatar = imageUrl(comment.author?.avatar) || avatarUrl(comment.author?.fullName || 'U');
 
   return (
     <div className="py-5 border-b" style={{ borderColor: 'var(--color-surface-container-high)' }}>
@@ -94,7 +94,7 @@ export default function Comment({ comment, blogId, onDelete }) {
             <div className="mt-4 pl-4 border-l-2" style={{ borderColor: 'var(--color-surface-container-high)' }}>
               {replies.map(reply => (
                 <div key={reply._id} className="flex gap-3 mb-3">
-                  <img src={reply.author?.avatar || avatarUrl(reply.author?.fullName || 'U')} alt=""
+                  <img src={imageUrl(reply.author?.avatar) || avatarUrl(reply.author?.fullName || 'U')} alt=""
                     className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
                   <div>
                     <span className="text-xs font-semibold mr-2" style={{ color: 'var(--color-primary)' }}>
